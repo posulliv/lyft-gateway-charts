@@ -1,0 +1,17 @@
+apiVersion: v1
+entries:
+  gateway:
+  - apiVersion: v2
+    appVersion: 1.8.8
+    created: "2022-03-21T21:23:02.216792498Z"
+    description: A load balancer / proxy / gateway for Trino
+    digest: 965cc6d4d5aab01abc5a75061492c8415a233a67993ea76b38c4404d09759560
+    home: https://github.com/lyft/presto-gateway
+    name: gateway
+    sources:
+    - https://github.com/lyft/presto-gateway
+    type: application
+    urls:
+    - https://github.com/posulliv/lyft-gateway-charts/releases/download/gateway-0.1.1/gateway-0.1.1.tgz
+    version: 0.1.1
+generated: "2022-03-21T21:23:01.941150029Z"
