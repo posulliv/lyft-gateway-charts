@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -euo pipefail
+
+endpoint="http://localhost:8091/healthcheck"
+
+if ! info=$(curl --fail --silent --show-error --insecure "$endpoint"); then
+    echo >&2 "Server is not responding to requests"
+    exit 1
+fi
+
+if ! grep -q '"Started":\s*false' <<<"$info" >/dev/null; then
+    echo >&2 "gateway is starting"
+    exit 1
+fi

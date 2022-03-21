@@ -1,0 +1,41 @@
+#!/bin/bash
+
+set -xeuo pipefail
+
+test -v REQUEST_PORT
+test -v APP_PORT
+test -v ADMIN_PORT
+test -v MYSQL_HOST
+test -v MYSQL_PORT
+test -v MYSQL_SCHEMA
+test -v MYSQL_USER
+test -v MYSQL_PASSWORD
+test -v LOG_LEVEL
+
+echo "request port: ${REQUEST_PORT}"
+echo "app port: ${APP_PORT}"
+echo "admin port: ${ADMIN_PORT}"
+
+REQUEST_PORT=$(echo ${REQUEST_PORT} | tr -d '\n ')
+APP_PORT=$(echo ${APP_PORT} | tr -d '\n ')
+ADMIN_PORT=$(echo ${ADMIN_PORT} | tr -d '\n ')
+MYSQL_HOST=$(echo ${MYSQL_HOST} | tr -d '\n ')
+MYSQL_PORT=$(echo ${MYSQL_PORT} | tr -d '\n ')
+MYSQL_SCHEMA=$(echo ${MYSQL_SCHEMA} | tr -d '\n ')
+MYSQL_USER=$(echo ${MYSQL_USER} | tr -d '\n ')
+MYSQL_PASSWORD=$(echo ${MYSQL_PASSWORD} | tr -d '\n ')
+LOG_LEVEL=$(echo ${LOG_LEVEL} | tr -d '\n ')
+
+sed -i \
+    -e "s|REQUEST_PORT|${REQUEST_PORT}|g" \
+    -e "s|APP_PORT|${APP_PORT}|g" \
+    -e "s|ADMIN_PORT|${ADMIN_PORT}|g" \
+    -e "s|MYSQL_HOST|${MYSQL_HOST}|g" \
+    -e "s|MYSQL_PORT|${MYSQL_PORT}|g" \
+    -e "s|MYSQL_SCHEMA|${MYSQL_SCHEMA}|g" \
+    -e "s|MYSQL_USER|${MYSQL_USER}|g" \
+    -e "s|MYSQL_PASSWORD|${MYSQL_PASSWORD}|g" \
+    -e "s|LOG_LEVEL|${LOG_LEVEL}|g" \
+    /gateway/config.yml
+
+exec java -XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=80 -jar /gateway/gateway-ha.jar server /gateway/config.yml "$@"

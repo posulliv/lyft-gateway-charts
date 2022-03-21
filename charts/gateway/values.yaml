@@ -1,0 +1,43 @@
+# Default values for gateway.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: posulliv/gateway
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: latest
+
+gateway:
+  requestPort: 8080
+  appPort: 8090
+  adminPort: 8091
+  log:
+    level: INFO
+
+backendDatabase:
+  host: localhost
+  port: 3306
+  schema: gateway
+  user: root
+  password: root
+
+securityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+
+service:
+  type: ClusterIP
+  port: 8080
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
