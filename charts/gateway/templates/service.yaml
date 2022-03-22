@@ -7,9 +7,17 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
+    - port: {{ .Values.service.requestPort }}
+      targetPort: request-port
+      protocol: TCP
+      name: request-port
+    - port: {{ .Values.service.appPort }}
       targetPort: app-port
       protocol: TCP
       name: app-port
+    - port: {{ .Values.service.adminPort }}
+      targetPort: admin-port
+      protocol: TCP
+      name: admin-port
   selector:
     {{- include "gateway.selectorLabels" . | nindent 4 }}

@@ -28,7 +28,9 @@ securityContext:
 
 service:
   type: ClusterIP
-  port: 8080
+  requestPort: 8080
+  appPort: 8090
+  adminPort: 8091
 
 imagePullSecrets: []
 nameOverride: ""
