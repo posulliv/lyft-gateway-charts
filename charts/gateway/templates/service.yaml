@@ -8,8 +8,8 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: request-port
+      targetPort: app-port
       protocol: TCP
-      name: request-port
+      name: app-port
   selector:
     {{- include "gateway.selectorLabels" . | nindent 4 }}
