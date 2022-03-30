@@ -11,6 +11,10 @@ test -v MYSQL_SCHEMA
 test -v MYSQL_USER
 test -v MYSQL_PASSWORD
 test -v LOG_LEVEL
+test -v QUERY_HISTORY_SIZE
+test -v TLS_ENABLED
+test -v KEYSTORE_PATH
+test -v KEYSTORE_PASSWORD
 
 echo "request port: ${REQUEST_PORT}"
 echo "app port: ${APP_PORT}"
@@ -25,6 +29,10 @@ MYSQL_SCHEMA=$(echo ${MYSQL_SCHEMA} | tr -d '\n ')
 MYSQL_USER=$(echo ${MYSQL_USER} | tr -d '\n ')
 MYSQL_PASSWORD=$(echo ${MYSQL_PASSWORD} | tr -d '\n ')
 LOG_LEVEL=$(echo ${LOG_LEVEL} | tr -d '\n ')
+QUERY_HISTORY_SIZE=$(echo ${QUERY_HISTORY_SIZE} | tr -d '\n ')
+TLS_ENABLED=$(echo ${TLS_ENABLED} | tr -d '\n ')
+KEYSTORE_PATH=$(echo ${KEYSTORE_PATH} | tr -d '\n ')
+KEYSTORE_PASSWORD=$(echo ${KEYSTORE_PASSWORD} | tr -d '\n ')
 
 sed -i \
     -e "s|REQUEST_PORT|${REQUEST_PORT}|g" \
@@ -36,6 +44,10 @@ sed -i \
     -e "s|MYSQL_USER|${MYSQL_USER}|g" \
     -e "s|MYSQL_PASSWORD|${MYSQL_PASSWORD}|g" \
     -e "s|LOG_LEVEL|${LOG_LEVEL}|g" \
+    -e "s|QUERY_HISTORY_SIZE|${QUERY_HISTORY_SIZE}|g" \
+    -e "s|TLS_ENABLED|${TLS_ENABLED}|g" \
+    -e "s|KEYSTORE_PATH|${KEYSTORE_PATH}|g" \
+    -e "s|KEYSTORE_PASSWORD|${KEYSTORE_PASSWORD}|g" \
     /gateway/config.yml
 
 exec java -XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=80 -jar /gateway/gateway-ha.jar server /gateway/config.yml "$@"

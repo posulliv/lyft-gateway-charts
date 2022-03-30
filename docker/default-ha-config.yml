@@ -5,7 +5,10 @@ routingRules:
 requestRouter:
   port: REQUEST_PORT
   name: prestoRouter
-  historySize: 1000
+  historySize: QUERY_HISTORY_SIZE
+  ssl: TLS_ENABLED
+  keystorePath: KEYSTORE_PATH
+  keystorePass: KEYSTORE_PASSWORD
 
 dataStore:
   jdbcUrl: jdbc:mysql://MYSQL_HOST:MYSQL_PORT/MYSQL_SCHEMA

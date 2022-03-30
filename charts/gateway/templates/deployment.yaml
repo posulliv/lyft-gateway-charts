@@ -18,6 +18,12 @@ spec:
       labels:
         {{- include "gateway.selectorLabels" . | nindent 8 }}
     spec:
+      initContainers:
+        {{- range .Values.secretMounts }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .secretName }}
+        {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -67,8 +73,23 @@ spec:
               value: {{ .Values.backendDatabase.password }}
             - name: LOG_LEVEL
               value: {{ .Values.gateway.log.level }}
+            - name: QUERY_HISTORY_SIZE
+              value: {{ .Values.gateway.queryHistorySize }}
+            - name: TLS_ENABLED
+              value: {{ .Values.gateway.tls.enabled }}
+            {{- if .Values.gateway.tls.enabled }}
+            - name: KEYSTORE_PATH
+              value: {{ .Values.gateway.tls.keystorePath }}
+            - name: KEYSTORE_PASSWORD
+              value: {{ .Values.gateway.tls.keystorePassword }}
+            {{- end }}
             {{- with .Values.env }}
             {{- toYaml . | nindent 12 }}
+            {{- end }}
+          volumeMounts:
+            {{- range .Values.secretMounts }}
+            -name: {{ .name }}
+             mountPath: {{ .path }}
             {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

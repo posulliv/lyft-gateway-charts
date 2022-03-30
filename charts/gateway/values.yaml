@@ -14,6 +14,11 @@ gateway:
   adminPort: 8091
   log:
     level: INFO
+  tls:
+    enabled: false
+    keystorePath: 
+    keystorePassword: 
+  queryHistorySize: 1000
 
 backendDatabase:
   host: localhost
@@ -43,3 +48,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+secretMounts: []
