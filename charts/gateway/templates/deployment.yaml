@@ -18,12 +18,6 @@ spec:
       labels:
         {{- include "gateway.selectorLabels" . | nindent 8 }}
     spec:
-      initContainers:
-        {{- range .Values.secretMounts }}
-        - name: {{ .name }}
-          secret:
-            secretName: {{ .secretName }}
-        {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -90,9 +84,16 @@ spec:
             {{- range .Values.secretMounts }}
             - name: {{ .name }}
               mountPath: {{ .path }}
+              readOnly: true
             {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        {{- range .Values.secretMounts }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .secretName }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
