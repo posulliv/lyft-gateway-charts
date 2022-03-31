@@ -2,7 +2,7 @@ apiVersion: v2
 name: gateway
 description: A load balancer / proxy / gateway for Trino
 type: application
-version: 0.2.1
+version: 0.2.2
 appVersion: 1.8.8
 
 home: https://github.com/lyft/presto-gateway
