@@ -77,12 +77,10 @@ spec:
               value: {{ .Values.gateway.queryHistorySize }}
             - name: TLS_ENABLED
               value: {{ .Values.gateway.tls.enabled }}
-            {{- if .Values.gateway.tls.enabled }}
             - name: KEYSTORE_PATH
               value: {{ .Values.gateway.tls.keystorePath }}
             - name: KEYSTORE_PASSWORD
               value: {{ .Values.gateway.tls.keystorePassword }}
-            {{- end }}
             {{- with .Values.env }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
