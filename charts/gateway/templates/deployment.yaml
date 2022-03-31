@@ -70,7 +70,7 @@ spec:
             - name: QUERY_HISTORY_SIZE
               value: "{{ .Values.gateway.queryHistorySize }}"
             - name: TLS_ENABLED
-              value: {{ .Values.gateway.tls.enabled }}
+              value: {{ .Values.gateway.tls.enabled | quote }}
             {{- if .Values.gateway.tls.enabled }}
             - name: KEYSTORE_PATH
               value: {{ .Values.gateway.tls.keystorePath }}
