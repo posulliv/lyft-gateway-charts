@@ -16,8 +16,8 @@ gateway:
     level: INFO
   tls:
     enabled: false
-    keystorePath: 
-    keystorePassword: 
+    keystorePath: ""
+    keystorePassword: ""
   queryHistorySize: 1000
 
 backendDatabase:
