@@ -21,7 +21,7 @@ You can then run `helm search repo gateway` to see the charts.
 Then you can install chart using:
 
 ```console
-helm install trino-gateway gateway/gateway --version 0.2.6 
+helm install trino-gateway gateway/gateway --version 0.3.0
 ```
 
 ## Documentation
