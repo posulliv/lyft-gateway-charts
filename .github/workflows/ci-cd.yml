@@ -1,0 +1,104 @@
+# This workflow:
+#   - lints the chart, runs tests and verifies documentation is up to date
+# Additionally if the event isn't a pull-request (and hence a merge/push to main):
+#   - sync README to gh-pages branch
+#   - release a new chart version if the version isn't already released
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+# Cancel previous PR builds.
+concurrency:
+  # Cancel all workflow runs except latest within a concurrency group. This is achieved by defining a concurrency group for the PR.
+  # Non-PR builds have singleton concurrency groups.
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.number || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up chart-testing
+        uses: helm/chart-testing-action@v2.0.1
+      - name: Lint charts
+        run: ct lint --charts=charts/gateway --validate-maintainers=false
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.4.0
+      - name: Set up chart-testing
+        uses: helm/chart-testing-action@v2.0.1
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.2.0
+      - name: Install charts
+        run: ct install --charts=charts/gateway
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install Frigate
+        run: pip install frigate
+      - name: Check if chart README is in-sync
+        run: |
+          frigate gen charts/gateway > charts/gateway/README.md
+          if ! git diff --exit-code --quiet; then
+            cat << 'EOF'
+          charts/gateway/README.md is not in sync with chart
+          Please update charts/gateway/README.md by running:
+              python3 -m venv .venv && . .venv/bin/activate
+              pip install frigate
+              frigate gen charts/gateway > charts/gateway/README.md
+
+          Here's a diff of what's changed:
+          EOF
+
+            git diff
+            # fail the job
+            exit 1
+          else
+            echo "charts/gateway/README.md is in-sync with chart"
+          fi
+
+  # Everything above is CI, everything here and below is for releases and runs only on non-pull-request events
+  sync-readme:
+    needs: [lint, test, docs]
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v2
+        with:
+          path: main
+      - name: Checkout gh-pages
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+          path: gh-pages
+      - name: Copy all README files from main to gh-pages
+        run: |
+          cd main
+          # cp --parents preserves directory structure
+          find . -name 'README.md' -exec cp --parents '{}' "../gh-pages/" ';'
+      - name: Commit changes to gh-pages and push
+        run: |
+          cd gh-pages
+          git add .
+          git config user.name "GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          # Commit only if changes exist to avoid failure in this step
+          git diff-index --quiet HEAD || git commit --signoff -m "Sync READMEs from main"
+          git push
