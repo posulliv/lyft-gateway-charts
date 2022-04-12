@@ -19,30 +19,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up chart-testing
-        uses: helm/chart-testing-action@v2.0.1
-      - name: Lint charts
-        run: ct lint --charts=charts/gateway --validate-maintainers=false
-
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Helm
-        uses: azure/setup-helm@v1
-        with:
-          version: v3.4.0
-      - name: Set up chart-testing
-        uses: helm/chart-testing-action@v2.0.1
-      - name: Create kind cluster
-        uses: helm/kind-action@v1.2.0
-      - name: Install charts
-        run: ct install --charts=charts/gateway
-
   docs:
     runs-on: ubuntu-latest
     steps:
@@ -75,7 +51,7 @@ jobs:
 
   # Everything above is CI, everything here and below is for releases and runs only on non-pull-request events
   sync-readme:
-    needs: [lint, test, docs]
+    needs: [docs]
     runs-on: ubuntu-latest
     if: github.event_name != 'pull_request'
     steps:
