@@ -1,6 +1,6 @@
 routingRules:
-  rulesEngineEnabled: False
-  # rulesConfigPath: "src/main/resources/rules/routing_rules.yml"
+  rulesEngineEnabled: ROUTING_RULES_ENABLED
+  rulesConfigPath: ROUTING_RULES_CONFIG_PATH
 
 requestRouter:
   port: REQUEST_PORT

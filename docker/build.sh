@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-GATEWAY_VERSION=1.8.8-SNAPSHOT
+GATEWAY_VERSION=1.9.5
 
 # git clone
 git clone -q git@github.com:lyft/presto-gateway.git

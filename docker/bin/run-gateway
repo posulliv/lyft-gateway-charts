@@ -15,6 +15,8 @@ test -v QUERY_HISTORY_SIZE
 test -v TLS_ENABLED
 test -v KEYSTORE_PATH
 test -v KEYSTORE_PASSWORD
+test -v ROUTING_RULES_ENABLED
+test -v ROUTING_RULES_CONFIG_PATH
 
 echo "request port: ${REQUEST_PORT}"
 echo "app port: ${APP_PORT}"
@@ -33,6 +35,8 @@ QUERY_HISTORY_SIZE=$(echo ${QUERY_HISTORY_SIZE} | tr -d '\n ')
 TLS_ENABLED=$(echo ${TLS_ENABLED} | tr -d '\n ')
 KEYSTORE_PATH=$(echo ${KEYSTORE_PATH} | tr -d '\n ')
 KEYSTORE_PASSWORD=$(echo ${KEYSTORE_PASSWORD} | tr -d '\n ')
+ROUTING_RULES_ENABLED=$(echo ${ROUTING_RULES_ENABLED} | tr -d '\n ')
+ROUTING_RULES_CONFIG_PATH=$(echo ${ROUTING_RULES_CONFIG_PATH} | tr -d '\n ')
 
 sed -i \
     -e "s|REQUEST_PORT|${REQUEST_PORT}|g" \
@@ -48,6 +52,8 @@ sed -i \
     -e "s|TLS_ENABLED|${TLS_ENABLED}|g" \
     -e "s|KEYSTORE_PATH|${KEYSTORE_PATH}|g" \
     -e "s|KEYSTORE_PASSWORD|${KEYSTORE_PASSWORD}|g" \
+    -e "s|ROUTING_RULES_ENABLED|${ROUTING_RULES_ENABLED}|g" \
+    -e "s|ROUTING_RULES_CONFIG_PATH|${ROUTING_RULES_CONFIG_PATH}|g" \
     /gateway/config.yml
 
 exec java -XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=80 -jar /gateway/gateway-ha.jar server /gateway/config.yml "$@"

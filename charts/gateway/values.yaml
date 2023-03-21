@@ -18,6 +18,9 @@ gateway:
     enabled: false
     keystorePath: ""
     keystorePassword: ""
+  routingRules:
+    enabled: false
+    configPath: ""
   queryHistorySize: 1000
 
 backendDatabase:
@@ -50,3 +53,5 @@ tolerations: []
 affinity: {}
 
 secretMounts: []
+
+additionalVolumes: []

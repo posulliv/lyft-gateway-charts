@@ -75,22 +75,37 @@ spec:
               value: {{ .Values.gateway.tls.keystorePath }}
             - name: KEYSTORE_PASSWORD
               value: {{ .Values.gateway.tls.keystorePassword }}
+            - name: ROUTING_RULES_ENABLED
+              value: {{ .Values.gateway.routingRules.enabled | quote }}
+            - name: ROUTING_RULES_CONFIG_PATH
+              value: {{ .Values.gateway.routingRules.configPath }}
             {{- with .Values.env }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             {{- range .Values.secretMounts }}
             - name: {{ .name }}
               mountPath: {{ .path }}
               readOnly: true
             {{- end }}
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- range $index, $volSpec := .Values.additionalVolumes }}
+            - name: additional-volume-{{ $index }}
+              mountPath: {{ $volSpec.path }}
+              {{- if $volSpec.subPath }}
+              subPath: {{ $volSpec.subPath }}
+              {{- end }}
+            {{- end }}
       volumes:
         {{- range .Values.secretMounts }}
         - name: {{ .name }}
           secret:
             secretName: {{ .secretName }}
+        {{- end }}
+        {{- range $index, $volSpec := .Values.additionalVolumes }}
+        - name: additional-volume-{{ $index -}}
+          {{- toYaml $volSpec.volume | nindent 10 -}}
         {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
